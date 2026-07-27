@@ -1,2 +1,10 @@
+# Compiled files
 *.exe
-*.dat
+*.out
+*.o
+
+# VS Code
+.vscode/
+
+# Temporary files
+*.tmp
