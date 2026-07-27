@@ -1,186 +1,164 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+# University Result Management System
 
-#define MAX_NAME_LEN 100
-#define MAX_ID_LEN 20
+A console-based **University Result Management System** developed in **C language** using **structures and file handling**.
 
-// Structure
-typedef struct {
-    char name[MAX_NAME_LEN];
-    char id[MAX_ID_LEN];
-    float marks[5];
-    float percentage;
-} Student;
+This project allows users to store, view, and search student academic records efficiently with permanent data storage using a binary file.
 
-// Function declarations
-void addStudent();
-void viewStudents();
-void searchStudent();
-int is_valid_name(const char *name);
-int is_valid_id(const char *id);
-void clear_input_buffer();
+---
 
-// Main menu
-int main() {
-    int choice;
+## 📌 Features
 
-    do {
-        printf("\n==============================\n");
-        printf(" UNIVERSITY RESULT MANAGEMENT\n");
-        printf("==============================\n");
-        printf("1. Add Student Result\n");
-        printf("2. View All Results\n");
-        printf("3. Search Result by ID\n");
-        printf("4. Exit\n");
-        printf("Enter your choice: ");
-        scanf("%d", &choice);
-        clear_input_buffer();
+- Add student details and marks
+- Calculate average percentage automatically
+- View all student results
+- Search student result using Student ID
+- Input validation for student name
+- Input validation for student ID
+- Permanent data storage using file handling
+- Simple menu-driven console interface
 
-        switch (choice) {
-            case 1:
-                addStudent();
-                break;
-            case 2:
-                viewStudents();
-                break;
-            case 3:
-                searchStudent();
-                break;
-            case 4:
-                printf("Exiting program...\n");
-                break;
-            default:
-                printf("Invalid choice! Try again.\n");
-        }
-    } while (choice != 4);
+---
 
-    return 0;
-}
+## 📂 Project Structure
 
-// Clear input buffer
-void clear_input_buffer() {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
-}
+```
+University-Result-Management-System/
+│
+├── result_management.c     # Main C source code
+│
+├── results.dat             # Binary file storing student records
+│
+├── README.md               # Project documentation
+│
+└── .gitignore              # Git ignored files
+```
 
-// Validate name
-int is_valid_name(const char *name) {
-    int hasLetter = 0;
-    for (int i = 0; name[i]; i++) {
-        if (!isalpha(name[i]) && name[i] != ' ')
-            return 0;
-        if (isalpha(name[i]))
-            hasLetter = 1;
-    }
-    return hasLetter;
-}
+---
 
-// Validate ID
-int is_valid_id(const char *id) {
-    for (int i = 0; id[i]; i++) {
-        if (!isalnum(id[i]))
-            return 0;
-    }
-    return strlen(id) > 0;
-}
+## 🛠️ Technologies Used
 
-// Add student
-void addStudent() {
-    Student s;
-    FILE *fp = fopen("results.dat", "ab");
+- **Programming Language:** C
 
-    if (fp == NULL) {
-        printf("Error opening file!\n");
-        return;
-    }
+### Concepts Implemented:
+- Structures
+- File Handling
+- Functions
+- Arrays
+- Loops
+- Conditional Statements
+- Input Validation
 
-    // Name input
-    do {
-        printf("Enter Student Name: ");
-        fgets(s.name, MAX_NAME_LEN, stdin);
-        s.name[strcspn(s.name, "\n")] = '\0';
+---
 
-        if (!is_valid_name(s.name))
-            printf("Invalid name! Only letters & spaces allowed.\n");
-    } while (!is_valid_name(s.name));
+## ⚙️ How to Run the Project
 
-    // ID input
-    do {
-        printf("Enter Student ID: ");
-        scanf("%s", s.id);
-        clear_input_buffer();
+### 1. Clone the Repository
 
-        if (!is_valid_id(s.id))
-            printf("Invalid ID! Only alphanumeric allowed.\n");
-    } while (!is_valid_id(s.id));
+```bash
+git clone https://github.com/your-username/University-Result-Management-System.git
+```
 
-    // Marks input
-    s.percentage = 0;
-    for (int i = 0; i < 5; i++) {
-        printf("Enter marks for subject %d: ", i + 1);
-        scanf("%f", &s.marks[i]);
-        s.percentage += s.marks[i];
-    }
-    clear_input_buffer();
-    s.percentage /= 5;
+### 2. Navigate to the Project Folder
 
-    fwrite(&s, sizeof(Student), 1, fp);
-    fclose(fp);
+```bash
+cd University-Result-Management-System
+```
 
-    printf("Student record added successfully!\n");
-}
+### 3. Compile the Program
 
-// View all students
-void viewStudents() {
-    Student s;
-    FILE *fp = fopen("results.dat", "rb");
+Using GCC:
 
-    if (fp == NULL) {
-        printf("No records found.\n");
-        return;
-    }
+```bash
+gcc result_management.c -o result
+```
 
-    printf("\n----- Student Results -----\n");
-    while (fread(&s, sizeof(Student), 1, fp)) {
-        printf("\nName: %s", s.name);
-        printf("\nID: %s", s.id);
-        printf("\nPercentage: %.2f%%\n", s.percentage);
-    }
+### 4. Run the Program
 
-    fclose(fp);
-}
+Windows:
 
-// Search student
-void searchStudent() {
-    Student s;
-    char searchID[MAX_ID_LEN];
-    int found = 0;
+```bash
+result.exe
+```
 
-    FILE *fp = fopen("results.dat", "rb");
-    if (fp == NULL) {
-        printf("No records found.\n");
-        return;
-    }
+Linux/Mac:
 
-    printf("Enter Student ID to search: ");
-    scanf("%s", searchID);
-    clear_input_buffer();
+```bash
+./result
+```
 
-    while (fread(&s, sizeof(Student), 1, fp)) {
-        if (strcmp(s.id, searchID) == 0) {
-            printf("\nStudent Found!");
-            printf("\nName: %s", s.name);
-            printf("\nID: %s", s.id);
-            printf("\nPercentage: %.2f%%\n", s.percentage);
-            found = 1;
-            break;
-        }
-    }
+---
 
-    if (!found)
-        printf("Student record not found.\n");
+## 📖 Program Workflow
 
-    fclose(fp);
-}
+1. Start the program
+2. Select an option from the menu:
+   - Add Student Result
+   - View All Results
+   - Search Result by ID
+   - Exit
+
+3. Student information is stored inside `results.dat`.
+4. Stored records can be accessed whenever the program runs again.
+
+---
+
+## 📊 Student Data Stored
+
+Each student record contains:
+
+- Student Name
+- Student ID
+- Marks of 5 Subjects
+- Average Percentage
+
+Example:
+
+```
+Name: Rahul Sharma
+ID: ST101
+
+Marks:
+Subject 1: 85
+Subject 2: 90
+Subject 3: 88
+Subject 4: 76
+Subject 5: 92
+
+Percentage: 86.20%
+```
+
+---
+
+## 🎯 Learning Outcomes
+
+Through this project, the following concepts were practiced:
+
+- Creating and using structures in C
+- Performing file operations
+- Managing records using binary files
+- Implementing searching techniques
+- Handling user input validation
+
+---
+
+## 🚀 Future Improvements
+
+- Add update student records feature
+- Add delete student records feature
+- Add grade calculation system
+- Add sorting functionality
+- Add database integration
+- Create a graphical user interface
+
+---
+
+## 👨‍💻 Author
+
+**Sarthak Negi**
+
+B.Tech Computer Science Engineering  
+Graphic Era Hill University
+
+---
+
+⭐ If you like this project, consider giving it a star on GitHub.
